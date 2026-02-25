@@ -1,0 +1,174 @@
+// =======================
+// INDEX.JS
+// =======================
+Goat.newVersionDetected=⚡ Update Available! Current: v%1 | Latest: v%2 → Run %3
+Goat.autoRestart1=🔁 Auto restart in %1
+Goat.autoRestart2=⏰ Cron restart scheduled: %1
+Goat.googleApiTokenExpired=🔐 Google API token expired — renew now: https://developers.google.com/oauthplayground/
+version.tooOldVersion=⚠️ Your Goat-Bot version is outdated — update using: %1
+
+// =======================
+// BOT/LOGIN/LOGIN.JS
+// =======================
+login.currentlyLogged=🔄 Authenticating...
+login.notFoundDirAccount=📁 Account file not found: %1
+
+login.loginToken=🔑 Login using access token
+login.loginCookieString=🍪 Login using cookie string
+login.loginCookieNetscape=📜 Login using netscape cookie
+login.loginCookieArray=📦 Login using cookie array
+login.loginPassword=📧 Login with email & password
+
+login.chooseAccount=📧 Email & Password
+login.chooseToken=🔑 Access Token
+login.chooseCookieString=🍪 Cookie String
+login.chooseCookieArray=📦 Cookie Array
+
+login.loginWith=➡️ Selected method: %1
+
+login.inputEmail=📧 Enter Facebook email or number:
+login.inputPassword=🔐 Enter password:
+login.input2FA=🔢 Enter 2FA code (optional):
+
+login.inputToken=🔑 Enter full permission token:
+login.inputCookieString=🍪 Enter cookie string:
+login.inputCookieArray=📦 Enter cookie array:
+
+login.refreshCookie=♻️ Refreshing cookie...
+login.refreshCookieSuccess=✅ Cookie refreshed — restart bot
+login.refreshCookieError=❌ Cookie refresh failed
+
+login.tokenError=⚠️ Token invalid or expired
+login.cookieError=⚠️ Cookie invalid or expired
+login.loginPasswordError=❌ Email login failed
+
+login.loginSuccess=✅ Login successful
+login.loginError=❌ Login failed
+
+login.openDashboardSuccess=📊 Dashboard opened successfully
+login.openDashboardError=❌ Failed to open dashboard
+
+login.youAreBanned=🚫 You are banned from Goat-Bot
+login.runBot=🚀 Bot started — listening to messages
+login.notLoggedIn=❌ Authentication failed
+
+login.restartListenMessage=🔁 MQTT auto-restart every %1
+login.stopRestartListenMessage=⛔ Auto restart disabled
+login.restartListenMessage2=✅ MQTT restarted successfully
+
+login.listenMqttClose=📴 MQTT stopped
+login.listenMqttCloseByUser=⛔ MQTT closed by user
+
+login.startBotSuccess=🎉 Bot running successfully
+
+// =======================
+// BOT/CUSTOM.JS
+// =======================
+custom.refreshedFb_dtsg=✅ fb_dtsg refreshed successfully
+custom.refreshedFb_dtsgError=❌ fb_dtsg refresh failed
+
+// =======================
+// BOT/LOGIN/LOADDATA.JS
+// =======================
+loadData.loadThreadDataSuccess=📦 Loaded %1 groups
+loadData.loadUserDataSuccess=👤 Loaded %1 users
+loadData.refreshingThreadData=🔄 Updating group data...
+loadData.refreshThreadDataSuccess=✅ Group data updated
+loadData.refreshThreadDataError=❌ Group update failed
+
+// =======================
+// BOT/LOGIN/LOADSCRIPTS.JS
+// =======================
+loadScripts.loadScriptsError=❌ %1 file(s) failed to load
+loadScripts.loadScriptsNotMatchOrigin=⚠️ %1 file(s) do not match original source
+loadScripts.NOT_FOUND=❌ NOT FOUND: %1
+loadScripts.NOT_MATCH=⚠️ DOES NOT MATCH: %1
+
+// =======================
+// BOT/LOGIN/SOCKETIO.JS
+// =======================
+socketIO.connected=✅ Connected to socket.io server
+socketIO.error=❌ Socket.io connection failed
+
+// =======================
+// BOT/HANDLER/HANDLERCHECKDATA.JS
+// =======================
+handlerCheckData.cantCreateThread=❌ Cannot write group id '%1' to database
+handlerCheckData.cantCreateUser=❌ Cannot write user id '%1' to database
+
+// =======================
+// BOT/HANDLER/HANDLEREVENTS.JS
+// =======================
+handlerEvents.userBanned=🚫 You are banned\n» Reason: %1\n» Time: %2\n» User ID: %3
+handlerEvents.threadBanned=🚫 Group banned\n» Reason: %1\n» Time: %2\n» Thread ID: %3
+handlerEvents.onlyAdminBox=🔒 Admins only
+handlerEvents.onlyAdminBot=❌ Bot admins only
+handlerEvents.onlyDeveloperGlobal=⚙️ Bot developer only
+handlerEvents.onlyVipUserGlobal=💎 VIP users only
+handlerEvents.commandNotFound=❌ Command "%1" not found — type %2help
+handlerEvents.commandNotFoundWithSuggestion=😅Command "%1" not found
+handlerEvents.commandSyntaxError=⚠️ Wrong syntax — type %1help %2
+handlerEvents.onlyAdmin=❌ Admins only for "%1"
+handlerEvents.onlyAdminToUseOnReply=❌ Admins only to reply "%1"
+handlerEvents.onlyAdminToUseOnReaction=❌ Admins only to react "%1"
+handlerEvents.onlyDeveloper=⚙️ Developer only for "%1"
+handlerEvents.onlyVipUser=💎 VIP only for "%1"
+handlerEvents.waitingForCommand=⏱ Wait %1s before using this command
+handlerEvents.errorOccurred=❌ Error [%1] at "%2"\n%3
+handlerEvents.cannotFindCommand=❌ Cannot find "%1" to execute
+handlerEvents.onlyPrefix=🗣️ This is just my Prefix: [%1]. Please type %1help to see available commands! ⚙️🚩
+
+// =======================
+// BOT/AUTOUTIME.JS
+// =======================
+autoUptime.autoUptimeTurnedOn=⏱ AutoUptime mode ON
+
+// =======================
+// DATABASE/CONTROLLER/INDEX.JS
+// =======================
+indexController.connectingMongoDB=🔌 Connecting MongoDB...
+indexController.connectMongoDBSuccess=✅ MongoDB connected
+indexController.connectMongoDBError=❌ MongoDB connection failed: %1
+indexController.connectingMySQL=🔌 Connecting SQLITE...
+indexController.connectMySQLSuccess=✅ SQLITE connected
+indexController.connectMySQLError=❌ SQLITE connection failed: %1
+
+// =======================
+// UPDATER.JS
+// =======================
+updater.updateTooFast=⏳ Wait 5 min after last commit — %1m %2s left
+updater.latestVersion=✅ Using latest version
+updater.cantFindVersion=❌ Version undefined (%1)
+updater.newVersions=⬆️ %1 new versions — updating...
+updater.updateSuccess=✅ Update successful %1
+updater.configChanged=⚠️ %1 changed — check config.json
+updater.installingPackages=📦 Installing dependencies...
+updater.installSuccess=✅ Dependencies installed — restart bot
+updater.backupSuccess=💾 Backup saved: %1
+updater.restartToApply=🔄 Restart bot to apply
+updater.skipFile=⚠️ Skipped %1 due to comment %2
+
+// =======================
+// DASHBOARD/ROUTES/VERIFYFBID.JS
+// =======================
+verifyfbid.sendCode=🔢 Your verification code:\n%1\nValid for %2 minutes
+
+// =======================
+// UTILS.JS
+// =======================
+utils.errorOccurred=❌ Error:\n%1
+
+// =======================
+// COMMAND.JS
+// =======================
+command.restartedBot=♻️ Bot restarted
+
+// =======================
+// DASHBOARD/APP.JS
+// =======================
+app.googleApiRefreshTokenExpired=🔐 Google API token expired — renew: https://developers.google.com/oauthplayground/
+app.tooManyRequests=⚠️ Too many requests — try later
+app.notPermissionChangeFbstate=❌ No permission to change fbstate
+app.notFoundFbstate=❌ Enter fbstate
+app.changedFbstateSuccess=✅ fbstate changed
+app.serverError=❌ Server error — try later
