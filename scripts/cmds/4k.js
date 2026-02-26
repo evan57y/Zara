@@ -2,23 +2,30 @@ const axios = require("axios");
 const fs = require("fs-extra");
 const path = require("path");
 
-const apiurl =
-  "https://raw.githubusercontent.com/Saim-x69x/sakura/main/ApiUrl.json";
+// API URL ক্যাশ করার জন্য ভেরিয়েবল
+let cachedApiUrl = null;
 
 async function getApiUrl() {
-  const res = await axios.get(apiurl);
-  return res.data.apiv4;
+  if (cachedApiUrl) return cachedApiUrl;
+  try {
+    const res = await axios.get("https://raw.githubusercontent.com/Saim-x69x/sakura/main/ApiUrl.json");
+    cachedApiUrl = res.data.apiv4;
+    return cachedApiUrl;
+  } catch (e) {
+    console.error("Failed to fetch API URL, using fallback.");
+    return null; 
+  }
 }
 
 module.exports = {
   config: {
     name: "4k",
-    aliases: ["upscale","hd","clear","5k"],
-    version: "1.0",
+    aliases: ["hd","clear","5k","6k"],
+    version: "1.1",
     author: "Siyuuuu",
     category: "image",
-    shortDescription: "image clear & 4K",
-    longDescription: "picture quality 4K and clear",
+    shortDescription: "image clear & HD",
+    longDescription: "picture quality Hd and clear",
     guide: "{pn} (reply to image)"
   },
 
@@ -27,69 +34,50 @@ module.exports = {
     let processingMsg;
 
     try {
-      if (event.messageReply?.attachments?.length) {
+      // ইমেজ ইউআরএল ডিটেকশন
+      if (event.messageReply?.attachments?.length > 0) {
         imageUrl = event.messageReply.attachments[0].url;
-      } else if (event.attachments?.length) {
+      } else if (event.attachments?.length > 0) {
         imageUrl = event.attachments[0].url;
       } else {
-        return api.sendMessage(
-          "❌ Please reply to or attach an image.",
-          event.threadID,
-          event.messageID
-        );
+        return api.sendMessage("❌ দয়া করে একটি ছবিতে রিপ্লাই দিন অথবা ছবিসহ কমান্ডটি লিখুন।", event.threadID, event.messageID);
       }
 
-      processingMsg = await api.sendMessage(
-        "⏳ Upscaling image to 4K, please wait...",
-        event.threadID,
-        null,
-        event.messageID
-      );
+      processingMsg = await api.sendMessage("⏳ আপনার ছবিটি 4K করা হচ্ছে, দয়া করে অপেক্ষা করুন...", event.threadID);
 
       const BASE_API = await getApiUrl();
-      const apiUrl = `${BASE_API}/4k?url=${encodeURIComponent(imageUrl)}`;
+      if (!BASE_API) throw new Error("API Server is down");
 
+      const apiUrl = `${BASE_API}/4k?url=${encodeURIComponent(imageUrl)}`;
       const res = await axios.get(apiUrl);
 
-      if (!res.data?.image) throw new Error("Invalid API response");
-
-      const imgPath = path.join(__dirname, "cache", `${Date.now()}_4k.jpg`);
-
-      const imgRes = await axios.get(res.data.image, {
-        responseType: "arraybuffer"
-      });
-
-      await fs.ensureDir(path.dirname(imgPath));
-      await fs.writeFile(imgPath, imgRes.data);
-
-      await api.sendMessage(
-        {
-          body: "✅ Image upscaled to 4K successfully!",
-          attachment: fs.createReadStream(imgPath)
-        },
-        event.threadID,
-        null,
-        event.messageID
-      );
-
-      if (processingMsg?.messageID) {
-        api.unsendMessage(processingMsg.messageID);
+      if (!res.data || !res.data.image) {
+        throw new Error("Invalid API response");
       }
 
-      await fs.remove(imgPath);
+      // ফাইল সেভ করার পাথ
+      const cacheDir = path.join(__dirname, "cache");
+      await fs.ensureDir(cacheDir);
+      const imgPath = path.join(cacheDir, `${Date.now()}_4k.jpg`);
+
+      // ইমেজ ডাউনলোড
+      const imgRes = await axios.get(res.data.image, { responseType: "arraybuffer" });
+      await fs.writeFile(imgPath, Buffer.from(imgRes.data));
+
+      // মেসেজ পাঠানো
+      await api.sendMessage({
+        body: "✅ আপনার HD  ছবি তৈরি!",
+        attachment: fs.createReadStream(imgPath)
+      }, event.threadID, () => {
+        // পাঠানোর পর ফাইল এবং মেসেজ ডিলিট
+        if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+        if (processingMsg?.messageID) api.unsendMessage(processingMsg.messageID);
+      }, event.messageID);
 
     } catch (error) {
       console.error("4k command error:", error);
-
-      if (processingMsg?.messageID) {
-        api.unsendMessage(processingMsg.messageID);
-      }
-
-      api.sendMessage(
-        "❌ Failed to upscale image. Please try again later.",
-        event.threadID,
-        event.messageID
-      );
+      if (processingMsg?.messageID) api.unsendMessage(processingMsg.messageID);
+      api.sendMessage("❌ দুঃখিত, ছবিটি 4K করতে সমস্যা হয়েছে। পরে আবার চেষ্টা করুন।", event.threadID, event.messageID);
     }
   }
 };
