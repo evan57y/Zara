@@ -1,7 +1,7 @@
 {
   "name": "goat-bot-v2-fixed",
-  "version": "2.5.1",
-  "description": "Fixed and optimized for high speed performance.",
+  "version": "2.5.2",
+  "description": "Fixed ora module error and optimized for performance.",
   "main": "index.js",
   "engines": {
     "node": ">=20.0.0"
@@ -10,6 +10,7 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "ora": "^5.4.1",
     "@distube/ytdl-core": "latest",
     "axios": "^1.7.0",
     "canvas": "^3.1.0",
