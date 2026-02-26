@@ -1,37 +1,24 @@
 {
-  "name": "goat-bot-v2",
+  "name": "goat-bot-replit",
   "version": "1.5.35",
-  "description": "GoatBot Replit Optimized Build",
+  "description": "Optimized for Replit",
   "main": "index.js",
-  "engines": {
-    "node": "20.x"
-  },
   "scripts": {
-    "start": "node index.js",
-    "postinstall": "echo Replit install complete"
+    "start": "node index.js"
   },
   "dependencies": {
-    "fca-unofficial": "latest",
-    "axios": "^1.7.7",
-    "chalk": "^4.1.2",
-    "cheerio": "^1.0.0",
     "express": "^4.21.1",
+    "fca-unofficial": "latest",
     "fs-extra": "^11.1.0",
-    "moment": "^2.29.4",
-    "moment-timezone": "^0.5.34",
-    "mongoose": "^6.3.1",
-    "node-cron": "^3.0.2",
-    "nodemailer": "^6.7.5",
+    "fs": "0.0.1-security",
+    "axios": "^1.7.7",
     "ora": "^5.4.1",
-    "qs": "^6.13.1",
-    "request": "^2.88.2",
-    "request-promise": "^4.2.6",
-    "socket.io": "^4.5.1",
-    "tinyurl": "^1.1.7",
-    "uuid": "^11.0.3",
-    "ws": "^8.13.0",
-    "yt-search": "^2.12.1",
-    "@distube/ytdl-core": "latest",
-    "dotenv": "^17.2.1"
+    "qrcode-reader": "^1.0.4",
+    "jimp": "^1.6.0",
+    "chalk": "^4.1.2",
+    "moment-timezone": "^0.5.34",
+    "npmlog": "^7.0.1",
+    "dotenv": "^17.2.1",
+    "path": "^0.12.7"
   }
 }
