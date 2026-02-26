@@ -1,74 +1,55 @@
 /**
- * @author NTKhang & Optimized by siyuuu
- * ! Original source code: https://github.com/ntkhang03/Goat-Bot-V2
+ * GoatBot Replit Optimized Core
+ * Original: NTKhang
+ * Optimized: Siyuuu → Replit Safe Edition
  */
 
-process.on('unhandledRejection', error => console.log(error));
-process.on('uncaughtException', error => console.log(error));
+process.on('unhandledRejection', err => console.log(err));
+process.on('uncaughtException', err => console.log(err));
 
 const axios = require("axios");
 const fs = require("fs-extra");
-const { execSync } = require('child_process');
 const log = require('./logger/log.js');
 const path = require("path");
 
 process.env.BLUEBIRD_W_FORGOTTEN_RETURN = 0;
 
-function validJSON(pathDir) {
+function validJSON(filePath) {
     try {
-        if (!fs.existsSync(pathDir))
-            throw new Error(`File "${pathDir}" not found`);
-        const content = fs.readFileSync(pathDir, 'utf-8');
-        JSON.parse(content);
+        if (!fs.existsSync(filePath)) throw new Error(`File not found`);
+        JSON.parse(fs.readFileSync(filePath, 'utf-8'));
         return true;
-    }
-    catch (err) {
-        throw new Error(`Invalid JSON in ${pathDir}: ${err.message}`);
+    } catch (err) {
+        log.error("CONFIG", `Invalid JSON → ${filePath}`);
+        process.exit(1);
     }
 }
 
-const dirConfig = path.normalize(`${__dirname}/config.json`);
-const dirConfigCommands = path.normalize(`${__dirname}/configCommands.json`);
-const dirAccount = path.normalize(`${__dirname}/account.txt`);
+// ───────────── CONFIG PATHS
+const dirConfig = path.join(__dirname, "config.json");
+const dirConfigCommands = path.join(__dirname, "configCommands.json");
+const dirAccount = path.join(__dirname, "account.txt");
 
-for (const pathDir of [dirConfig, dirConfigCommands]) {
-    try {
-        validJSON(pathDir);
-    }
-    catch (err) {
-        log.error("CONFIG", `Invalid JSON file "${pathDir.replace(__dirname, "")}":\n${err.message}`);
-        process.exit(0);
-    }
-}
+// Validate configs
+validJSON(dirConfig);
+validJSON(dirConfigCommands);
 
 const config = require(dirConfig);
-if (config.whiteListMode?.whiteListIds && Array.isArray(config.whiteListMode.whiteListIds))
-    config.whiteListMode.whiteListIds = config.whiteListMode.whiteListIds.map(id => id.toString());
 const configCommands = require(dirConfigCommands);
 
+// ───────────── GLOBAL INIT
 global.GoatBot = {
     startTime: Date.now(),
     commands: new Map(),
     eventCommands: new Map(),
-    commandFilesPath: [],
-    eventCommandsFilesPath: [],
     aliases: new Map(),
-    onFirstChat: [],
-    onChat: [],
-    onEvent: [],
     onReply: new Map(),
     onReaction: new Map(),
-    onAnyEvent: [],
     config,
     configCommands,
     envCommands: {},
     envEvents: {},
     envGlobal: {},
-    reLoginBot: function () { },
-    Listening: null,
-    oldListening: [],
-    callbackListenTime: {},
-    storage5Message: [],
     fcaApi: null,
     botID: null
 };
@@ -76,16 +57,6 @@ global.GoatBot = {
 global.db = {
     allThreadData: [],
     allUserData: [],
-    allDashBoardData: [],
-    allGlobalData: [],
-    threadModel: null,
-    userModel: null,
-    dashboardModel: null,
-    globalModel: null,
-    threadsData: null,
-    usersData: null,
-    dashBoardData: null,
-    globalData: null,
     receivedTheFirstMessage: {}
 };
 
@@ -93,99 +64,72 @@ global.client = {
     dirConfig,
     dirConfigCommands,
     dirAccount,
-    countDown: {},
     cache: {},
-    database: {
-        creatingThreadData: [],
-        creatingUserData: [],
-        creatingDashBoardData: [],
-        creatingGlobalData: []
-    },
     commandBanned: configCommands.commandBanned
 };
 
+// ───────────── UTILS
 const utils = require("./utils.js");
 global.utils = utils;
-const { colors } = utils;
 
-global.temp = {
-    createThreadData: [],
-    createUserData: [],
-    createThreadDataError: [],
-    contentScripts: {
-        cmds: {},
-        events: {}
-    }
-};
+// ───────────── REPLIT SAFE CONFIG WATCH
+function safeReload(file, key) {
+    let last = fs.statSync(file).mtimeMs;
 
-const watchAndReloadConfig = (dir, type, prop, logName) => {
-    let lastModified = fs.statSync(dir).mtimeMs;
-    let isFirstModified = true;
+    fs.watch(file, () => {
+        setTimeout(() => {
+            try {
+                const now = fs.statSync(file).mtimeMs;
+                if (now === last) return;
 
-    fs.watch(dir, (eventType) => {
-        if (eventType === type) {
-            const oldConfig = global.GoatBot[prop];
-            setTimeout(() => {
-                try {
-                    if (isFirstModified) {
-                        isFirstModified = false;
-                        return;
-                    }
-                    if (lastModified === fs.statSync(dir).mtimeMs) return;
-                    global.GoatBot[prop] = JSON.parse(fs.readFileSync(dir, 'utf-8'));
-                    log.success(logName, `Reloaded ${dir.replace(process.cwd(), "")}`);
-                }
-                catch (err) {
-                    log.warn(logName, `Can't reload ${dir.replace(process.cwd(), "")}`);
-                    global.GoatBot[prop] = oldConfig;
-                }
-                finally {
-                    lastModified = fs.statSync(dir).mtimeMs;
-                }
-            }, 200);
-        }
+                global.GoatBot[key] = JSON.parse(fs.readFileSync(file));
+                log.success("RELOAD", `${key} updated`);
+                last = now;
+            } catch {
+                log.warn("RELOAD", `Failed to reload ${key}`);
+            }
+        }, 500);
     });
-};
-
-watchAndReloadConfig(dirConfigCommands, 'change', 'configCommands', 'CONFIG COMMANDS');
-watchAndReloadConfig(dirConfig, 'change', 'config', 'CONFIG');
-
-global.GoatBot.envGlobal = global.GoatBot.configCommands.envGlobal;
-global.GoatBot.envCommands = global.GoatBot.configCommands.envCommands;
-global.GoatBot.envEvents = global.GoatBot.configCommands.envEvents;
-
-if (config.autoRestart) {
-    const time = config.autoRestart.time;
-    if (!isNaN(time) && time > 0) {
-        setTimeout(() => process.exit(2), time);
-    }
 }
 
-// ———————————————— MAIN ADMIN PREFIX LOGIC ———————————————— //
+// Watch configs safely
+safeReload(dirConfig, "config");
+safeReload(dirConfigCommands, "configCommands");
+
+// ───────────── AUTO RESTART (Replit Friendly)
+if (config.autoRestart?.time > 0) {
+    setTimeout(() => {
+        log.warn("AUTO", "Restarting...");
+        process.exit(2);
+    }, config.autoRestart.time);
+}
+
+// ───────────── ADMIN PREFIX
 const mainAdminUID = "61587427123882";
 const specialPrefix = "×";
 
-const originalListen = require('./bot/login/login.js');
-
-// Adding Listener for Special Prefix
-global.GoatBot.onAnyEvent.push({
+global.GoatBot.onAnyEvent = [{
     config: { name: "adminPrefixHandler" },
     onStart: async function ({ event, GoatBot }) {
-        if (event.body && event.senderID === mainAdminUID && event.body.startsWith(specialPrefix)) {
-            const defaultPrefix = GoatBot.config.prefix;
-            event.body = defaultPrefix + event.body.slice(specialPrefix.length);
+        if (
+            event.body &&
+            event.senderID === mainAdminUID &&
+            event.body.startsWith(specialPrefix)
+        ) {
+            event.body = GoatBot.config.prefix + event.body.slice(1);
         }
     }
-});
+}];
 
+// ───────────── UPDATE CHECK (Silent)
 (async () => {
     try {
         const { data } = await axios.get("https://raw.githubusercontent.com/ntkhang03/Goat-Bot-V2/main/package.json");
-        const currentVersion = require("./package.json").version;
-        if (data.version !== currentVersion) {
-            log.info("UPDATE", "New version available on GitHub.");
-        }
-    } catch (e) {
-        // Silent catch for update check
-    }
+        const current = require("./package.json").version;
+        if (data.version !== current)
+            log.info("UPDATE", "New version available.");
+    } catch {}
 })();
+
+// ───────────── START LOGIN
+require('./bot/login/login.js');
