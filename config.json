@@ -10,12 +10,6 @@
   },
   "antiInbox": false,
   "language": "en",
-  "nickNameBot": "‌𝗺𝗮𝗶𝗸𝗼 [/]",
-  "prefix": "/",
-  "adminOnly": {
-    "enable": false,
-    "ignoreCommand": []
-  },
   "adminBot": [
     "61587427123882",
     "61576567185513"
@@ -28,13 +22,14 @@
     "61587427123882",
     "61576567185513"
   ],
-  "whiteListMode": {
-    "enable": false,
-    "whiteListIds": []
-  },
+  "reactBy": {
+    "delete": ["🗑️", "❌", "😠", "😡", "😾"],
+    "kick": ["👟", "🦵"]
+  }, 
+  "nickNameBot": "‌𝗺𝗮𝗶𝗸𝗼 [/]",
+  "prefix": "/",
   "database": {
     "type": "sqlite",
-    "uriMongodb": "",
     "autoSyncWhenStart": false,
     "autoRefreshThreadInfoFirstTime": true
   },
@@ -49,18 +44,13 @@
   "autoLoadScripts": {
     "enable": false
   },
-  "autoRefreshFbstate": true,
-  "angryUnsend": {
-    "enable": true,
-    "emojis": ["😡", "🤬", "😠"]
-  },
   "optionsFca": {
     "forceLogin": true,
     "listenEvents": true,
     "updatePresence": true,
     "listenTyping": true,
     "logLevel": "error",
-    "selfListen": false,
+    "selfListen": true,
     "selfListenEvent": true
   },
   "logEvents": {
