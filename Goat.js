@@ -2,7 +2,6 @@
  * @author NTKhang
  * ! The source code is written by NTKhang, please don't change the author's name everywhere. Thank you for using
  * ! Official source code: https://github.com/ntkhang03/Goat-Bot-V2
- * ! If you do not download the source code from the above address, you are using an unknown version and at risk of having your account hacked
  */
 
 process.on('unhandledRejection', error => console.log(error));
@@ -10,8 +9,6 @@ process.on('uncaughtException', error => console.log(error));
 
 const axios = require("axios");
 const fs = require("fs-extra");
-const google = require("googleapis").google;
-const nodemailer = require("nodemailer");
 const { execSync } = require('child_process');
 const log = require('./logger/log.js');
 const path = require("path");
@@ -34,7 +31,6 @@ function validJSON(pathDir) {
 	}
 }
 
-// Fixed to always use standard file names regardless of NODE_ENV
 const dirConfig = path.normalize(`${__dirname}/config.json`);
 const dirConfigCommands = path.normalize(`${__dirname}/configCommands.json`);
 const dirAccount = path.normalize(`${__dirname}/account.txt`);
@@ -191,63 +187,24 @@ if (config.autoRestart) {
 }
 
 (async () => {
-	const { gmailAccount } = config.credentials;
-	const { email, clientId, clientSecret, refreshToken } = gmailAccount;
-	const OAuth2 = google.auth.OAuth2;
-	const OAuth2_client = new OAuth2(clientId, clientSecret);
-	OAuth2_client.setCredentials({ refresh_token: refreshToken });
-	let accessToken;
-	try {
-		accessToken = await OAuth2_client.getAccessToken();
-	}
-	catch (err) {
-		throw new Error(getText("Goat", "googleApiTokenExpired"));
-	}
+    // Gmail setup and Google Drive parts have been removed to avoid credential errors
+	global.utils.sendMail = async () => { log.warn("MAIL", "Mail feature is disabled."); };
 	
-	const transporter = nodemailer.createTransport({
-		host: 'smtp.gmail.com',
-		service: 'Gmail',
-		auth: {
-			type: 'OAuth2',
-			user: email,
-			clientId,
-			clientSecret,
-			refreshToken,
-			accessToken
-		}
-	});
-
-	async function sendMail({ to, subject, text, html, attachments }) {
-		const mailOptions = {
-			from: email,
-			to,
-			subject,
-			text,
-			html,
-			attachments
-		};
-		const info = await transporter.sendMail(mailOptions);
-		return info;
+	try {
+		const { data: { version } } = await axios.get("https://raw.githubusercontent.com/ntkhang03/Goat-Bot-V2/main/package.json");
+		const currentVersion = require("./package.json").version;
+		if (compareVersion(version, currentVersion) === 1)
+			utils.log.master("NEW VERSION", getText(
+				"Goat",
+				"newVersionDetected",
+				colors.gray(currentVersion),
+				colors.hex("#eb6a07", version),
+				colors.hex("#eb6a07", "node update")
+			));
+	} catch (e) {
+		// Ignore update check errors
 	}
 
-	global.utils.sendMail = sendMail;
-	global.utils.transporter = transporter;
-
-	const { data: { version } } = await axios.get("https://raw.githubusercontent.com/ntkhang03/Goat-Bot-V2/main/package.json");
-	const currentVersion = require("./package.json").version;
-	if (compareVersion(version, currentVersion) === 1)
-		utils.log.master("NEW VERSION", getText(
-			"Goat",
-			"newVersionDetected",
-			colors.gray(currentVersion),
-			colors.hex("#eb6a07", version),
-			colors.hex("#eb6a07", "node update")
-		));
-
-	const parentIdGoogleDrive = await utils.drive.checkAndCreateParentFolder("GoatBot");
-	utils.drive.parentID = parentIdGoogleDrive;
-
-	// Always require the standard login.js
 	require(`./bot/login/login.js`);
 })();
 
@@ -261,5 +218,5 @@ function compareVersion(version1, version2) {
 			return -1; 
 	}
 	return 0; 
-	}
-			
+		}
+		
