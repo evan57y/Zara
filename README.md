@@ -11,7 +11,7 @@
     -webkit-text-fill-color: transparent;
     letter-spacing: 1px;
   ">
-    SHAHARIYA AHMMED SIYAM (SIYUUUU)
+    EVAN
   </span>
 </h1>
 
