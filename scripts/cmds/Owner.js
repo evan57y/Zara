@@ -5,7 +5,7 @@ const ownerContactId =
   global.GoatBot?.config?.ownerID ||
   global.config?.BOTOWNERID ||
   global.config?.BOTOWNER ||
-  "61584749395355";
+  "61584554519161";
 
 module.exports = {
   config: {
@@ -58,12 +58,12 @@ module.exports = {
     const info = `
 🌟✨ 𝗢𝘄𝗻𝗲𝗿 𝗜𝗻𝗳𝗼 ✨🌟
 
-👤 𝗡𝗮𝗺𝗲: Shahariya Ahmed Siyam (Siyuu)
-🤖 𝗕𝗼𝘁: ♡Maiko♡
+👤 𝗡𝗮𝗺𝗲: Evan 
+🤖 𝗕𝗼𝘁:𝒁𝑨𝑹𝑨あ
 🎂 𝗔𝗴𝗲: -+
 📚 𝗖𝗹𝗮𝘀𝘀: -+
 💖 𝗥𝗲𝗹𝗮𝘁𝗶𝗼𝗻: Single
-♂️ 𝗚𝗲𝗻𝗱𝗲𝗿: Male
+♂️ 𝗚𝗲𝗻𝗱𝗲𝗿: Female
 🏡 𝗙𝗿𝗼𝗺: Mymensingh
 
 📩 𝗖𝗼𝗻𝘁𝗮𝗰𝘁:
