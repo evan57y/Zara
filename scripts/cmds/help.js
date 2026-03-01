@@ -54,8 +54,8 @@ module.exports = {
     }
 
     // ===== FULL HELP MENU =====
-    const botName = "MAIKO";
-    const creator = "SIYUU";
+    const botName = "𝒁𝑨𝑹𝑨あ";
+    const creator = "Evan";
 
     // Collect commands by category
     const categories = {};
@@ -68,7 +68,7 @@ module.exports = {
 
     // Build menu text
     let text = 
-`✦『 maiko goatbot 』✦
+`✦『𝒁𝑨𝑹𝑨あ  』✦
 ✦ AI ✦
 ✦ HELP MENU ✦
 `;
