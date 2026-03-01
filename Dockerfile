@@ -1,24 +1,11 @@
-FROM node:20-slim
-
-WORKDIR /app
-
-# Install build dependencies required for native modules (canvas, sqlite3, etc)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
+RUN apt-get update && apt-get install -y \
     python3 \
+    build-essential \
     libcairo2-dev \
-    libpango-1.0-0 \
-    libpango-cairo-1.0-0 \
+    libpango1.0-dev \
+    libjpeg-dev \
     libgif-dev \
+    librsvg2-dev \
     libpixman-1-dev \
-    && rm -rf /var/lib/apt/lists/* || true
-
-# Install dependencies
-COPY package*.json ./
-RUN npm ci --omit=dev
-
-# Copy application files
-COPY . .
-
-# Run the bot
-CMD ["npm", "start"]
+    libuuid1 \
+    && rm -rf /var/lib/apt/lists/*
